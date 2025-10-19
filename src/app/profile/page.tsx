@@ -70,7 +70,7 @@ export default function ProfilePage() {
       if (!res.ok) throw new Error("Failed to fetch profile")
       const data = await res.json()
       setProfileData(data)
-    } catch (error) {
+    } catch (_error: unknown) {
       toast({
         title: "Error",
         description: "Failed to load profile",
@@ -96,7 +96,7 @@ export default function ProfilePage() {
         title: "Success",
         description: "Profile saved successfully",
       })
-    } catch (error) {
+    } catch (_error: unknown) {
       toast({
         title: "Error",
         description: "Failed to save profile",
@@ -122,7 +122,7 @@ export default function ProfilePage() {
     setProfileData({ ...profileData, experience: newExp })
   }
 
-  const updateExperience = (index: number, field: keyof Experience, value: any) => {
+  const updateExperience = (index: number, field: keyof Experience, value: string) => {
     const newExp = [...profileData.experience]
     newExp[index] = { ...newExp[index], [field]: value }
     setProfileData({ ...profileData, experience: newExp })
@@ -229,7 +229,7 @@ export default function ProfilePage() {
                 className="hover:bg-gray-100 dark:hover:bg-gray-800"
                 asChild
               >
-                <a href="/auth/logout">
+                <a href="/auth/logout" aria-label="Logout" title="Logout">
                   <LogOut className="w-5 h-5 text-gray-900 dark:text-white" />
                 </a>
               </Button>

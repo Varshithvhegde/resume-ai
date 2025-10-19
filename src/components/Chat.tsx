@@ -182,7 +182,7 @@ const Chat = ({ githubUrl, userProfile }: ChatProps) => {
                     How can I help you today?
                   </h2>
                   <p className='text-gray-600 dark:text-gray-400 max-w-md'>
-                    I'm here to help you create and improve your resume.
+                    I&apos;m here to help you create and improve your resume.
                   </p>
                 </div>
 

@@ -141,7 +141,6 @@ export const createGoogleDocResume = tool(
     }
 
     const addSection = (title: string) => {
-      const startIdx = index
       requests.push({
         insertText: {
           text: `${title.toUpperCase()}\n`,

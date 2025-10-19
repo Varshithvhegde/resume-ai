@@ -116,7 +116,7 @@ export const saveUserProfile = tool(
         .eq('user_email', email)
 
       if (experience.length > 0) {
-        const expData = experience.map((exp: any, idx: number) => ({
+        const expData = experience.map((exp: { role: string; company: string; duration: string; bullets: string[] }, idx: number) => ({
           user_email: email,
           role: exp.role,
           company: exp.company,
@@ -141,7 +141,7 @@ export const saveUserProfile = tool(
         .eq('user_email', email)
 
       if (education.length > 0) {
-        const eduData = education.map((edu: any, idx: number) => ({
+        const eduData = education.map((edu: { degree: string; institution: string; duration: string }, idx: number) => ({
           user_email: email,
           degree: edu.degree,
           institution: edu.institution,
@@ -165,7 +165,7 @@ export const saveUserProfile = tool(
         .eq('user_email', email)
 
       if (projects.length > 0) {
-        const projData = projects.map((proj: any, idx: number) => ({
+        const projData = projects.map((proj: { name: string; description: string }, idx: number) => ({
           user_email: email,
           name: proj.name,
           description: proj.description,
