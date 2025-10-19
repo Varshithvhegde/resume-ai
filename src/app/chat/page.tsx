@@ -15,5 +15,19 @@ async function generateAccountLinkingHref(requested_connection: string) {
 }
 
 export default async function Index() {
-  return <Chat githubUrl={await generateAccountLinkingHref("github")} />
+  const session = await auth0.getSession()
+  
+  // Extract user profile from session
+  const userProfile = session?.user ? {
+    email: session.user.email || "",
+    name: session.user.name,
+    picture: session.user.picture
+  } : undefined
+
+  return (
+    <Chat 
+      githubUrl={await generateAccountLinkingHref("github")} 
+      userProfile={userProfile}
+    />
+  )
 }

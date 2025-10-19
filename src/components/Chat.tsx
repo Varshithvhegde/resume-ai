@@ -4,16 +4,75 @@ import { Button } from "@/components/ui/button"
 import { toast } from "@/hooks/use-toast"
 import { Textarea } from "@/components/ui/textarea"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Send, LogOut, Copy, Check, Sparkles } from "lucide-react"
+import { Send, LogOut, Copy, Check } from "lucide-react"
 import Logo from "./ui/logo"
 import ReactMarkdown from "react-markdown"
 import { useChat } from "@ai-sdk/react"
+import { useRouter } from "next/navigation"
 
 type ChatProps = {
   githubUrl: string
+  userProfile?: {
+    email: string
+    name?: string
+    picture?: string
+  }
 }
 
-const Chat = ({ githubUrl }: ChatProps) => {
+// Profile Image Component
+const ProfileImage = ({ profile }: { profile?: { email: string; name?: string; picture?: string } }) => {
+  const router = useRouter()
+  
+  if (!profile) return null
+
+  const getInitials = () => {
+    if (profile.name) {
+      return profile.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    }
+    return profile.email[0].toUpperCase()
+  }
+
+  const getBackgroundColor = () => {
+    const colors = [
+      'bg-blue-500',
+      'bg-green-500',
+      'bg-purple-500',
+      'bg-pink-500',
+      'bg-indigo-500',
+      'bg-yellow-500',
+      'bg-red-500',
+      'bg-teal-500'
+    ]
+    const charCode = profile.email.charCodeAt(0)
+    return colors[charCode % colors.length]
+  }
+
+  const handleClick = () => {
+    router.push('/profile')
+  }
+
+  return (
+    <button
+      onClick={handleClick}
+      className="flex items-center justify-center w-9 h-9 rounded-full overflow-hidden hover:ring-2 hover:ring-gray-300 dark:hover:ring-gray-600 transition-all cursor-pointer"
+      title="View Profile"
+    >
+      {profile.picture ? (
+        <img
+          src={profile.picture}
+          alt={profile.name || profile.email}
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        <div className={`w-full h-full flex items-center justify-center ${getBackgroundColor()} text-white text-sm font-semibold`}>
+          {getInitials()}
+        </div>
+      )}
+    </button>
+  )
+}
+
+const Chat = ({ githubUrl, userProfile }: ChatProps) => {
   const [input, setInput] = useState<string>("")
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
   const [isTyping, setIsTyping] = useState(false)
@@ -90,22 +149,25 @@ const Chat = ({ githubUrl }: ChatProps) => {
     <div className='flex h-screen bg-white dark:bg-gray-950'>
       {/* Main Chat Area */}
       <div className='flex-1 flex flex-col'>
-        {/* Simple Header */}
+        {/* Header with Profile */}
         <div className='bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 px-4 py-3'>
           <div className='flex items-center justify-between max-w-3xl mx-auto'>
             <div className='flex items-center gap-3'>
               <Logo mode='dark' />
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className='hover:bg-gray-100 dark:hover:bg-gray-800'
-              asChild
-            >
-              <a href='/auth/logout'>
-                <LogOut className='w-5 h-5 text-gray-700 dark:text-gray-300' />
-              </a>
-            </Button>
+            <div className='flex items-center gap-2'>
+              <ProfileImage profile={userProfile} />
+              <Button
+                variant="ghost"
+                size="icon"
+                className='hover:bg-gray-100 dark:hover:bg-gray-800'
+                asChild
+              >
+                <a href='/auth/logout'>
+                  <LogOut className='w-5 h-5 text-gray-700 dark:text-gray-300' />
+                </a>
+              </Button>
+            </div>
           </div>
         </div>
 

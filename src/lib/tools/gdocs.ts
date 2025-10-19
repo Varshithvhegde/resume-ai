@@ -5,13 +5,16 @@ import { google } from "googleapis"
 import { auth0 } from "@/lib/auth0"
 import { extractTextFromGoogleDoc } from "../utils"
 
+// Set max listeners to prevent memory leak warnings
+process.setMaxListeners(20)
+
 export const readGoogleDocContent = tool(
   async ({ docId }) => {
     // Get the Google OAuth token for the user
     const { token } = await auth0.getAccessTokenForConnection({
       connection: "google-oauth2",
     })
-
+    console.log('token', token)
     const auth = new google.auth.OAuth2()
     auth.setCredentials({ access_token: token })
 
@@ -28,7 +31,7 @@ export const readGoogleDocContent = tool(
     const blocks = await extractTextFromGoogleDoc(body)
 
     return {
-      blocks,
+      blocks, 
     }
   },
   {
@@ -52,8 +55,8 @@ export const createGoogleDocResume = tool(
     email,
     phone,
     location,
-    linkedin,
-    github,
+    linkedin_url,
+    github_url,
     experience,
     education,
     skills,
@@ -260,7 +263,7 @@ export const createGoogleDocResume = tool(
     center(prevIndex, index)
 
     prevIndex = index
-    const socialLinksLine = `${linkedin} | ${github}`
+    const socialLinksLine = `${linkedin_url} | ${github_url}`
     addText(`${socialLinksLine}\n\n`, 9)
     center(prevIndex, index)
 
@@ -316,8 +319,8 @@ export const createGoogleDocResume = tool(
       email: z.string().describe("Email address of the user."),
       phone: z.string().describe("Phone number of the user."),
       location: z.string().describe("Location of the user."),
-      linkedin: z.string().url().describe("LinkedIn URL of the user."),
-      github: z.string().url().describe("GitHub URL of the user."),
+      linkedin_url: z.string().url().describe("LinkedIn URL of the user."),
+      github_url: z.string().url().describe("GitHub URL of the user."),
       experience: z.array(
         z.object({
           role: z.string().describe("Job title of the work experience."),

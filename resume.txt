@@ -1,0 +1,33 @@
+﻿Varshith V Hegde
+sslabmite174@gmail.com | +91 6363549133 | Bengaluru
+https://www.linkedin.com/in/varshithvhegde | https://github.com/varshithvhegde
+
+
+PROFESSIONAL EXPERIENCE
+──────────────────────────────────────────────────────────────────────
+KPIT Technologies     June 2023 - Present
+Associate Software Engineer
+* Led the D2 Cloud Infrastructure initiative, designing a secure and scalable architecture for cross-account data transfer.
+* Developed a full-stack web application using React (frontend) and Flask (backend), enhancing productivity by 40% through data filtering and bulk conversion.
+* Created backend solutions with Python on AWS, optimizing system efficiency for data processing workflows.
+* Built utility tools to streamline data handling, reducing manual processing time by 50%.
+* Designed and implemented an automated AWS system for data processing, cutting operational costs.
+
+
+Mobiezy Solutions     February 2023 - April 2023
+React Developer
+* Contributed to the development of a Progressive Web App (PWA) for an existing Android application, enhancing cross-platform user experience.
+* Developed frontend components using React JS, focusing on efficient state management with hooks and the context API.
+* Built middleware components to support robust data handling.
+* Utilized AWS services (EC2, S3, Amplify) for hosting and deployment, ensuring reliable infrastructure.
+
+
+EDUCATION
+──────────────────────────────────────────────────────────────────────
+Mangalore Institute of Technology & Engineering     2019 - 2023
+B.E. in Computer Science and Engineering
+
+
+TECHNICAL SKILLS
+──────────────────────────────────────────────────────────────────────
+Python • Java • JavaScript • Flask • React.js • Angular • HTML5 • CSS3 • Bootstrap • React Hooks • Context API • Redux • AWS (EC2, S3, Amplify, Lambda) • REST APIs • Progressive Web Apps (PWA) • Git • GitHub • Jenkins • GitLab CI/CD
