@@ -68,16 +68,21 @@ export async function GET(req: NextRequest) {
      // Transform data to match frontend expectations
      const responseData = {
        profile: profile ? {
-         ...profile,
-         linkedin_url: profile.linkedin,
-         github_url: profile.github,
+         email: profile.email,
+         full_name: profile.full_name || "",
+         phone: profile.phone || "",
+         location: profile.location || "",
+         linkedin: profile.linkedin || "",
+         github: profile.github || "",
+         summary: profile.summary || "", // NEW: Include summary
        } : { 
          email, 
          full_name: "", 
          phone: "", 
          location: "", 
-         linkedin_url: "", 
-         github_url: "" 
+         linkedin: "", 
+         github: "",
+         summary: "", // NEW: Include empty summary for new users
        },
        experience: experience || [],
        education: education || [],
@@ -118,8 +123,9 @@ export async function POST(req: NextRequest) {
              full_name: profile.full_name,
              phone: profile.phone,
              location: profile.location,
-             linkedin: profile.linkedin_url || profile.linkedin,
-             github: profile.github_url || profile.github,
+             linkedin: profile.linkedin || "",
+             github: profile.github || "",
+             summary: profile.summary || "", // NEW: Save summary field
              updated_at: new Date().toISOString(),
            },
            {

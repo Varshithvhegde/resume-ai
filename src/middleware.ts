@@ -9,6 +9,11 @@ export async function middleware(request: NextRequest) {
     return authRes
   }
 
+  // Allow debug API routes without requiring an app session
+  if (request.nextUrl.pathname.startsWith("/api/debug")) {
+    return NextResponse.next()
+  }
+
   const { origin } = new URL(request.url)
   const session = await auth0.getSession(request)
 

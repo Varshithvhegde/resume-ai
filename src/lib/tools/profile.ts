@@ -4,9 +4,6 @@ import { z } from "zod"
 import { supabase } from "@/lib/supabase"
 import { auth0 } from "@/lib/auth0"
 
-// Set max listeners to prevent memory leak warnings
-process.setMaxListeners(20)
-
 export const getUserProfile = tool(
   async () => {
     // Get the current user's email from Auth0
@@ -66,8 +63,27 @@ export const getUserProfile = tool(
       throw skillsError
     }
 
+    // Map the database fields to match the resume creation schema
+    const mappedProfile = profile ? {
+      email: profile.email,
+      full_name: profile.full_name || '',
+      phone: profile.phone || '',
+      location: profile.location || '',
+      linkedin_url: profile.linkedin || '', // Map linkedin to linkedin_url
+      github_url: profile.github || '',     // Map github to github_url
+      summary: profile.summary || ''
+    } : { 
+      email,
+      full_name: '',
+      phone: '',
+      location: '',
+      linkedin_url: '',
+      github_url: '',
+      summary: ''
+    }
+
     return {
-      profile: profile || { email },
+      profile: mappedProfile,
       experience: experience || [],
       education: education || [],
       projects: projects || [],
@@ -77,7 +93,7 @@ export const getUserProfile = tool(
   {
     name: "getUserProfile",
     description:
-      "Retrieves the complete profile information of the current logged-in user including personal details, work experience, education, projects, and skills. Use this tool whenever you need to access user's resume information to provide suggestions, create a resume, or answer questions about their profile.",
+      "Retrieves the complete profile information of the current logged-in user including personal details, professional summary, work experience, education, projects, and skills. Use this tool whenever you need to access user's resume information to provide suggestions, create a resume, or answer questions about their profile.",
     schema: z.object({}),
   }
 )
@@ -91,22 +107,23 @@ export const saveUserProfile = tool(
 
     const email = session.user.email
 
-     // Upsert profile if provided
-     if (profile) {
-       const { error: profileError } = await supabase
-         .from('user_profiles')
-         .upsert({
-           email,
-           full_name: profile.full_name,
-           phone: profile.phone,
-           location: profile.location,
-           linkedin: profile.linkedin_url,
-           github: profile.github_url,
-           updated_at: new Date().toISOString(),
-         })
+    // Upsert profile if provided
+    if (profile) {
+      const { error: profileError } = await supabase
+        .from('user_profiles')
+        .upsert({
+          email,
+          full_name: profile.full_name,
+          phone: profile.phone,
+          location: profile.location,
+          linkedin: profile.linkedin_url,  // Map linkedin_url to linkedin
+          github: profile.github_url,      // Map github_url to github
+          summary: profile.summary || '',
+          updated_at: new Date().toISOString(),
+        })
 
-       if (profileError) throw profileError
-     }
+      if (profileError) throw profileError
+    }
 
     // Update experience if provided
     if (experience) {
@@ -203,18 +220,19 @@ export const saveUserProfile = tool(
   {
     name: "saveUserProfile",
     description:
-      "Saves or updates the user's profile information in the database. You can update specific sections (profile, experience, education, projects, skills) or all at once. Only provide the sections you want to update.",
+      "Saves or updates the user's profile information in the database including their professional summary. You can update specific sections (profile, experience, education, projects, skills) or all at once. Only provide the sections you want to update.",
     schema: z.object({
-       profile: z
-         .object({
-           full_name: z.string(),
-           phone: z.string(),
-           location: z.string(),
-           linkedin_url: z.string().url(),
-           github_url: z.string().url(),
-         })
-         .optional()
-         .describe("Personal information of the user"),
+      profile: z
+        .object({
+          full_name: z.string(),
+          phone: z.string(),
+          location: z.string(),
+          linkedin_url: z.string().url(),
+          github_url: z.string().url(),
+          summary: z.string().optional().describe("Professional summary or career objective"),
+        })
+        .optional()
+        .describe("Personal information and professional summary of the user"),
       experience: z
         .array(
           z.object({

@@ -14,6 +14,7 @@ export interface UserProfile {
   location: string
   linkedin: string
   github: string
+  summary: string
   created_at?: string
   updated_at?: string
 }

@@ -34,6 +34,7 @@ interface ProfileData {
     location: string
     linkedin: string
     github: string
+    summary: string // NEW
   }
   experience: Experience[]
   education: Education[]
@@ -53,6 +54,7 @@ export default function ProfilePage() {
       location: "",
       linkedin: "",
       github: "",
+      summary: "", // NEW
     },
     experience: [],
     education: [],
@@ -330,6 +332,33 @@ export default function ProfilePage() {
                 />
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* NEW: Professional Summary Section */}
+        <Card className="border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <CardHeader>
+            <CardTitle className="text-gray-900 dark:text-white">Professional Summary</CardTitle>
+            <CardDescription className="text-gray-600 dark:text-gray-400">
+              A brief overview of your professional background and career objectives
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Textarea
+              value={profileData.profile.summary}
+              onChange={(e) =>
+                setProfileData({
+                  ...profileData,
+                  profile: { ...profileData.profile, summary: e.target.value },
+                })
+              }
+              placeholder="e.g., Experienced software engineer with 5+ years specializing in full-stack development. Passionate about building scalable web applications and leading cross-functional teams..."
+              rows={6}
+              className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-500"
+            />
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+              Tip: Keep it concise (2-4 sentences) and highlight your key strengths and goals
+            </p>
           </CardContent>
         </Card>
 

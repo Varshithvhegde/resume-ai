@@ -48,7 +48,7 @@ const ProfileImage = ({ profile }: { profile?: { email: string; name?: string; p
   }
 
   const handleClick = () => {
-    router.push('/profile')
+    window.open('/profile', '_blank')
   }
 
   return (

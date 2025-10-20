@@ -14,7 +14,6 @@ export const readGoogleDocContent = tool(
     const { token } = await auth0.getAccessTokenForConnection({
       connection: "google-oauth2",
     })
-    console.log('token', token)
     const auth = new google.auth.OAuth2()
     auth.setCredentials({ access_token: token })
 
@@ -49,19 +48,23 @@ export const readGoogleDocContent = tool(
 )
 
 export const createGoogleDocResume = tool(
-  async ({
-    docTitle,
-    fullName,
-    email,
-    phone,
-    location,
-    linkedin_url,
-    github_url,
-    experience,
-    education,
-    skills,
-    projects,
-  }) => {
+  async (input) => {
+    const {
+      docTitle,
+      fullName,
+      email,
+      phone,
+      location,
+      linkedin_url,
+      github_url,
+      summary,
+      experience,
+      education,
+      skills,
+      projects,
+    } = input
+
+
     const { token } = await auth0.getAccessTokenForConnection({
       connection: "google-oauth2",
     })
@@ -266,23 +269,36 @@ export const createGoogleDocResume = tool(
     addText(`${socialLinksLine}\n\n`, 9)
     center(prevIndex, index)
 
+    // ===== PROFESSIONAL SUMMARY SECTION =====
+    // Only add if summary exists and is not empty
+    if (summary && summary.trim().length > 0) {
+      addSection("Professional Summary")
+      addText(`${summary.trim()}\n\n`, 10)
+    }
+
     // ===== EXPERIENCE SECTION =====
-    addSection("Professional Experience")
-    for (const exp of experience) {
-      addCompanyHeader(exp.company, exp.duration)
-      addRole(exp.role)
-      for (const bullet of exp.bullets) {
-        addBullet(bullet)
+    if (experience && experience.length > 0) {
+      addSection("Professional Experience")
+      for (const exp of experience) {
+        addCompanyHeader(exp.company, exp.duration)
+        addRole(exp.role)
+        for (const bullet of exp.bullets) {
+          if (bullet && bullet.trim()) {
+            addBullet(bullet)
+          }
+        }
+        addText("\n")
       }
-      addText("\n")
     }
 
     // ===== EDUCATION SECTION =====
-    addSection("Education")
-    for (const item of education) {
-      addCompanyHeader(item.institution, item.duration)
-      addRole(item.degree)
-      addText("\n")
+    if (education && education.length > 0) {
+      addSection("Education")
+      for (const item of education) {
+        addCompanyHeader(item.institution, item.duration)
+        addRole(item.degree)
+        addText("\n")
+      }
     }
 
     // ===== PROJECTS SECTION =====
@@ -298,8 +314,10 @@ export const createGoogleDocResume = tool(
     }
 
     // ===== SKILLS SECTION =====
-    addSection("Technical Skills")
-    addText(`${skills.join(" • ")}\n`)
+    if (skills && skills.length > 0) {
+      addSection("Technical Skills")
+      addText(`${skills.join(" • ")}\n`)
+    }
 
     await docs.documents.batchUpdate({
       documentId: docId,
@@ -311,7 +329,7 @@ export const createGoogleDocResume = tool(
   {
     name: "createGoogleDocResume",
     description:
-      "Creates an ATS-friendly, professional resume using Google Docs and returns the document URL.",
+      "Creates an ATS-friendly, professional resume using Google Docs and returns the document URL. Include summary field if user has a professional summary in their profile.",
     schema: z.object({
       docTitle: z.string().describe("The title of the document."),
       fullName: z.string().describe("Full name of the user."),
@@ -320,6 +338,7 @@ export const createGoogleDocResume = tool(
       location: z.string().describe("Location of the user."),
       linkedin_url: z.string().url().describe("LinkedIn URL of the user."),
       github_url: z.string().url().describe("GitHub URL of the user."),
+      summary: z.string().describe("Professional summary or objective statement. Can be empty string if not available."),
       experience: z.array(
         z.object({
           role: z.string().describe("Job title of the work experience."),
