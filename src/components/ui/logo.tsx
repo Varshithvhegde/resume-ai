@@ -42,7 +42,7 @@ export default function Logo({ mode = "light" }: { mode?: "light" | "dark" }) {
         </svg>
       </div>
       <div className=''>
-        <h2 className='text-xl font-bold tracking-tight text-white'>ResumeAI</h2>
+        <h2 className='text-xl font-bold tracking-tight text-white'>Resumify</h2>
         <p className='text-xs font-medium text-white'>AI-Powered</p>
       </div>
     </div>

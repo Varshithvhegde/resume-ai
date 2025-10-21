@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Loader2, Plus, Trash2, Save, LogOut, ArrowLeft } from "lucide-react"
+import { Loader2, Plus, Trash2, Save, LogOut, ArrowLeft, X } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { toast } from "@/hooks/use-toast"
 
@@ -34,7 +34,7 @@ interface ProfileData {
     location: string
     linkedin: string
     github: string
-    summary: string // NEW
+    summary: string
   }
   experience: Experience[]
   education: Education[]
@@ -46,6 +46,7 @@ export default function ProfilePage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [skillInput, setSkillInput] = useState("")
   const [profileData, setProfileData] = useState<ProfileData>({
     profile: {
       email: "",
@@ -54,7 +55,7 @@ export default function ProfilePage() {
       location: "",
       linkedin: "",
       github: "",
-      summary: "", // NEW
+      summary: "",
     },
     experience: [],
     education: [],
@@ -184,9 +185,27 @@ export default function ProfilePage() {
     setProfileData({ ...profileData, projects: newProj })
   }
 
-  const updateSkills = (value: string) => {
-    const skillsArray = value.split(",").map((s) => s.trim()).filter(Boolean)
-    setProfileData({ ...profileData, skills: skillsArray })
+  const addSkill = () => {
+    const trimmed = skillInput.trim()
+    if (trimmed && !profileData.skills.includes(trimmed)) {
+      setProfileData({
+        ...profileData,
+        skills: [...profileData.skills, trimmed],
+      })
+      setSkillInput("")
+    }
+  }
+
+  const removeSkill = (index: number) => {
+    const newSkills = profileData.skills.filter((_, i) => i !== index)
+    setProfileData({ ...profileData, skills: newSkills })
+  }
+
+  const handleSkillKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault()
+      addSkill()
+    }
   }
 
   if (loading) {
@@ -335,7 +354,7 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
 
-        {/* NEW: Professional Summary Section */}
+        {/* Professional Summary Section */}
         <Card className="border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader>
             <CardTitle className="text-gray-900 dark:text-white">Professional Summary</CardTitle>
@@ -553,17 +572,54 @@ export default function ProfilePage() {
           <CardHeader>
             <CardTitle className="text-gray-900 dark:text-white">Technical Skills</CardTitle>
             <CardDescription className="text-gray-600 dark:text-gray-400">
-              Enter your skills separated by commas
+              Type a skill and press Enter or comma to add it
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <Textarea
-              value={profileData.skills.join(", ")}
-              onChange={(e) => updateSkills(e.target.value)}
-              placeholder="JavaScript, React, Node.js, Python, AWS"
-              rows={4}
-              className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-500"
-            />
+          <CardContent className="space-y-4">
+            <div className="flex gap-2">
+              <Input
+                value={skillInput}
+                onChange={(e) => setSkillInput(e.target.value)}
+                onKeyDown={handleSkillKeyDown}
+                placeholder="e.g., JavaScript, React, Node.js"
+                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-500"
+              />
+              <Button
+                onClick={addSkill}
+                type="button"
+                size="sm"
+                className="bg-gray-900 hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-900 whitespace-nowrap"
+              >
+                <Plus className="w-4 h-4 mr-1" />
+                Add
+              </Button>
+            </div>
+            
+            {/* Skills Tags Display */}
+            {profileData.skills.length > 0 && (
+              <div className="flex flex-wrap gap-2 p-4 border rounded-lg border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 min-h-[80px]">
+                {profileData.skills.map((skill, index) => (
+                  <div
+                    key={index}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-full text-sm text-gray-900 dark:text-white shadow-sm"
+                  >
+                    <span>{skill}</span>
+                    <button
+                      onClick={() => removeSkill(index)}
+                      type="button"
+                      className="ml-0.5 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full p-0.5 transition-colors"
+                      aria-label={`Remove ${skill}`}
+                    >
+                      <X className="w-3.5 h-3.5 text-gray-600 dark:text-gray-300" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Tip: Keep skills concise and ATS-friendly. Avoid parentheses - list each tool separately (e.g., "AWS EC2", "AWS S3" instead of "AWS (EC2, S3)")
+            </p>
           </CardContent>
         </Card>
 

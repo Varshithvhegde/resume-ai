@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Send, LogOut, Copy, Check, FileText, Sparkles, User, Settings, MessageSquare } from "lucide-react"
+import { Send, LogOut, Copy, Check, FileText, Sparkles, User, Settings, MessageSquare, Square } from "lucide-react"
 import ReactMarkdown from "react-markdown"
 import { useChat } from "@ai-sdk/react"
 import { useRouter } from "next/navigation"
@@ -40,7 +40,7 @@ const EnhancedLogo = () => {
       </div>
       <div className="flex flex-col">
         <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          ResumeAI
+          Resumify
         </span>
         <span className="text-[10px] text-gray-500 dark:text-gray-400 -mt-1">
           Powered by AI
@@ -104,7 +104,7 @@ const Chat = ({ githubUrl, userProfile }: ChatProps) => {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
   const [isTyping, setIsTyping] = useState(false)
 
-  const { messages, sendMessage, status } = useChat()
+  const { messages, sendMessage, status, stop } = useChat()
 
   const scrollAreaRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
@@ -148,6 +148,14 @@ const Chat = ({ githubUrl, userProfile }: ChatProps) => {
           variant: "destructive",
         })
       })
+  }
+
+  const handleStop = () => {
+    stop()
+    toast({
+      title: "Stopped",
+      description: "AI response has been stopped",
+    })
   }
 
   const handleCopy = (text: string, index: number) => {
@@ -210,7 +218,7 @@ const Chat = ({ githubUrl, userProfile }: ChatProps) => {
                     </div>
                   </div>
                   <h1 className='text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent'>
-                    Welcome to ResumeAI
+                    Welcome to Resumify
                   </h1>
                   <p className='text-lg text-gray-600 dark:text-gray-400 max-w-md'>
                     Your AI-powered assistant for creating outstanding resumes
@@ -264,7 +272,7 @@ const Chat = ({ githubUrl, userProfile }: ChatProps) => {
                     )}
                   </Avatar>
                   <span className='text-sm font-semibold text-gray-900 dark:text-white'>
-                    {message.role === "user" ? (userProfile?.name || "You") : "ResumeAI"}
+                    {message.role === "user" ? (userProfile?.name || "You") : "Resumify"}
                   </span>
                 </div>
                 
@@ -348,7 +356,7 @@ const Chat = ({ githubUrl, userProfile }: ChatProps) => {
                     </AvatarFallback>
                   </Avatar>
                   <span className='text-sm font-semibold text-gray-900 dark:text-white'>
-                    ResumeAI
+                    Resumify
                   </span>
                 </div>
                 <div className='ml-11'>
@@ -384,17 +392,27 @@ const Chat = ({ githubUrl, userProfile }: ChatProps) => {
                 disabled={isTyping}
                 rows={1}
               />
-              <Button
-                onClick={handleSend}
-                size='icon'
-                className='absolute right-2 bottom-2 h-10 w-10 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed'
-                disabled={!input.trim() || isTyping}
-              >
-                <Send className='w-4 h-4 text-white' />
-              </Button>
+              {isTyping ? (
+                <Button
+                  onClick={handleStop}
+                  size='icon'
+                  className='absolute right-2 bottom-2 h-10 w-10 rounded-xl bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 shadow-lg'
+                >
+                  <Square className='w-4 h-4 text-white fill-white' />
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleSend}
+                  size='icon'
+                  className='absolute right-2 bottom-2 h-10 w-10 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed'
+                  disabled={!input.trim()}
+                >
+                  <Send className='w-4 h-4 text-white' />
+                </Button>
+              )}
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">
-              Press Enter to send, Shift + Enter for new line
+              {isTyping ? "Click the stop button to cancel the response" : "Press Enter to send, Shift + Enter for new line"}
             </p>
           </div>
         </div>
