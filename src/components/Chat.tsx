@@ -328,8 +328,8 @@ const Chat = ({ githubUrl, userProfile }: ChatProps) => {
                         </>
                       ) : (
                         <>
-                          <Copy className='w-4 h-4 mr-2' />
-                          <span className="text-xs">Copy</span>
+                          <Copy className='w-4 h-4 mr-2 text-white' />
+                          <span className="text-xs text-white">Copy</span>
                         </>
                       )}
                     </Button>
