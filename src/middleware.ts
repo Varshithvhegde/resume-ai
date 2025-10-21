@@ -29,10 +29,11 @@ export const config = {
     /*
      * Match all request paths except for the ones starting with:
      * - _next/static (static files)
-     * - _next/image, images (image optimization files)
+     * - _next/image (image optimization)
      * - favicon.ico, sitemap.xml, robots.txt (metadata files)
-     * - $ (root)
+     * - public image files (png, jpg, jpeg, gif, webp)
+     * - root ($)
      */
-    "/((?!_next/static|_next/image|images|favicon.[ico|png]|sitemap.xml|robots.txt|$).*)",
+    "/((?!_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt|.*\\.(png|jpg|jpeg|gif|webp)|$).*)",
   ],
 }
