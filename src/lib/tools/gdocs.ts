@@ -71,16 +71,35 @@ export const createGoogleDocResume = tool(
 
     const auth = new google.auth.OAuth2()
     auth.setCredentials({ access_token: token })
-
+    
     const docs = google.docs({ version: "v1", auth })
-
+    const drive = google.drive({ version: "v3", auth })
+    
+    // Create the document
     const created = await docs.documents.create({
       requestBody: {
         title: `${fullName} - ${docTitle}`,
       },
     })
-
+    
     const docId = created.data.documentId!
+    
+    // Now make it public
+    await drive.permissions.create({
+      fileId: docId,
+      requestBody: {
+        role: "reader",          // viewer access
+        type: "anyone",          // anyone on the internet
+      },
+    })
+    
+    // Optional: Get the public URL
+    const { data } = await drive.files.get({
+      fileId: docId,
+      fields: "webViewLink, webContentLink",
+    })
+    
+    console.log("Public Google Doc URL:", data.webViewLink)
 
     let index = 1
     const requests: any[] = []
