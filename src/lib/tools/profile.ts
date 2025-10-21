@@ -109,18 +109,28 @@ export const saveUserProfile = tool(
 
     // Upsert profile if provided
     if (profile) {
+      // First, fetch existing profile to preserve fields not being updated
+      const { data: existingProfile } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('email', email)
+        .single()
+
+      // Merge existing data with updates, only overwriting provided fields
+      const profileData = {
+        email,
+        full_name: profile.full_name ?? existingProfile?.full_name ?? '',
+        phone: profile.phone ?? existingProfile?.phone ?? '',
+        location: profile.location ?? existingProfile?.location ?? '',
+        linkedin: profile.linkedin_url ?? existingProfile?.linkedin ?? '',
+        github: profile.github_url ?? existingProfile?.github ?? '',
+        summary: profile.summary ?? existingProfile?.summary ?? '',
+        updated_at: new Date().toISOString(),
+      }
+
       const { error: profileError } = await supabase
         .from('user_profiles')
-        .upsert({
-          email,
-          full_name: profile.full_name,
-          phone: profile.phone,
-          location: profile.location,
-          linkedin: profile.linkedin_url,  // Map linkedin_url to linkedin
-          github: profile.github_url,      // Map github_url to github
-          summary: profile.summary || '',
-          updated_at: new Date().toISOString(),
-        })
+        .upsert(profileData)
 
       if (profileError) throw profileError
     }
@@ -224,11 +234,11 @@ export const saveUserProfile = tool(
     schema: z.object({
       profile: z
         .object({
-          full_name: z.string(),
-          phone: z.string(),
-          location: z.string(),
-          linkedin_url: z.string().url(),
-          github_url: z.string().url(),
+          full_name: z.string().optional(),
+          phone: z.string().optional(),
+          location: z.string().optional(),
+          linkedin_url: z.string().url().optional(),
+          github_url: z.string().url().optional(),
           summary: z.string().optional().describe("Professional summary or career objective"),
         })
         .optional()
