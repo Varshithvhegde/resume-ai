@@ -17,12 +17,12 @@ export const metadata: Metadata = {
   title: "Resumify - AI-Powered Resume Builder & Career Assistant",
   description:
     "Create and optimize your resume effortlessly with AI. Resumify helps you tailor your resume for every job, integrate with Google Docs, and send professional applications instantly.",
-  metadataBase: new URL("https://resumify.vercel.app"), // Replace with your deployed domain
+  metadataBase: new URL("https://resumify.varshithvhegde.in"), // Replace with your deployed domain
   openGraph: {
     title: "Resumify - AI-Powered Resume Builder & Career Assistant",
     description:
       "Tailor your resume for every job with AI. Connect your Google Docs, optimize your resume, and boost your career.",
-    url: "https://resumify.vercel.app",
+    url: "https://resumify.varshithvhegde.in",
     siteName: "Resumify",
     images: [
       {
