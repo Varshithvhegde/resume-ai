@@ -37,7 +37,6 @@ Resumify is an intelligent, AI-powered resume building platform that helps users
 ### 🔐 Secure Authentication & Data Management
 - **Auth0 Integration**: Secure authentication with multiple provider support
 - **Google OAuth**: Seamless Google account integration
-- **GitHub Integration**: Connect GitHub account for repository access
 - **Data Security**: All user data encrypted and securely stored
 - **Session Management**: Secure session handling with automatic token refresh
 
@@ -68,7 +67,6 @@ Resumify is an intelligent, AI-powered resume building platform that helps users
 ### Integrations
 - **Google Docs API**: Document creation and management
 - **Gmail API**: Email composition and management
-- **GitHub API**: Repository access and management
 - **Auth0**: Multi-provider authentication
 
 ## 🚀 Getting Started
@@ -188,7 +186,6 @@ Resumify is an intelligent, AI-powered resume building platform that helps users
 ### 1. Getting Started
 - Sign up or log in using Auth0
 - Connect your Google account for Google Docs integration
-- Optionally connect your GitHub account
 
 ### 2. Profile Setup
 - Navigate to the Profile page
