@@ -289,6 +289,27 @@ const HomePage = () => {
             </p>
           </div>
 
+          {/* Video Demo */}
+          <div className="max-w-4xl mx-auto mb-16">
+            <Card className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 overflow-hidden shadow-2xl">
+              <CardContent className="p-0">
+                <div
+                  className="relative w-full"
+                  style={{ paddingBottom: "56.25%" }}
+                >
+                  <iframe
+                    className="absolute top-0 left-0 w-full h-full"
+                    src="https://www.youtube.com/embed/GgcnqjZ_tTo"
+                    title="Resumify Demo"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {howItWorks.map((item, idx) => (
               <Card
